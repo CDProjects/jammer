@@ -1,0 +1,18 @@
+/* Playlist.css */
+.Playlist {
+    /* Style your playlist here */
+  }
+  
+  .Playlist-save {
+    background-color: #1db954;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    margin-top: 20px;
+    cursor: pointer;
+  }
+  
+  .Playlist-save:hover {
+    background-color: #0f8138;
+  }
+  
