@@ -20,12 +20,23 @@ function App() {
     // Add more tracks as needed
   ]);
 
+  const addTrackToPlaylist = (track) => {
+    if (playlistTracks.find(savedTrack => savedTrack.id === track.id)) {
+      return; // Track already in playlist, do nothing
+    }
+    setPlaylistTracks([...playlistTracks, track]);
+  };
+
   return (
     <div className="App">
       <SearchBar />
       <div className="App-playlist">
-        <SearchResults searchResults={searchResults} />
-        <Playlist playlistName={playlistName} playlistTracks={playlistTracks} />
+        <SearchResults searchResults={searchResults} onAdd={addTrackToPlaylist} />
+        <Playlist 
+          playlistName={playlistName} 
+          playlistTracks={playlistTracks}
+          onNameChange={setPlaylistName}
+        />
       </div>
     </div>
   );
