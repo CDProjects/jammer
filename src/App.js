@@ -17,6 +17,8 @@ function App() {
   const [playlistTracks, setPlaylistTracks] = useState([
     { id: 3, name: 'Track Name 3', artist: 'Artist 3', album: 'Album 3' },
     { id: 4, name: 'Track Name 4', artist: 'Artist 4', album: 'Album 4' },
+    { id: 1, name: 'Track 1', artist: 'Artist 1', album: 'Album 1', uri: 'spotify:track:5Er1BdhfwUWxWFO8pxAYwD' },
+    { id: 2, name: 'Track 2', artist: 'Artist 2', album: 'Album 2', uri: 'spotify:track:1tqArbKc1vM3R0BgeZ6055' },
     // Add more tracks as needed
   ]);
 
