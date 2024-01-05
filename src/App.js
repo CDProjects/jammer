@@ -37,6 +37,16 @@ function App() {
     setPlaylistName(newName);
   };
 
+  const savePlaylist = () => {
+    const trackURIs = playlistTracks.map(track => track.uri);
+    console.log('Saving playlist to Spotify with URIs:', trackURIs);
+    // Here you will eventually interact with the Spotify API
+
+    // Reset the playlist after saving
+    setPlaylistName('New Playlist');
+    setPlaylistTracks([]);
+  };
+
   return (
     <div className="App">
       <SearchBar />
@@ -45,8 +55,9 @@ function App() {
         <Playlist 
           playlistName={playlistName} 
           playlistTracks={playlistTracks}
-          onNameChange={updatePlaylistName}
+          onNameChange={setPlaylistName}
           onRemove={removeTrackFromPlaylist}
+          onSave={savePlaylist}
         />
       </div>
     </div>
