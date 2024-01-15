@@ -9,12 +9,18 @@ function App() {
   useEffect(() => {
     Spotify.getAccessToken(); // Ensure we have an access token
   }, []);
-  // Mock data for search results
-  const [searchResults, setSearchResults] = useState([
-    { id: 1, name: 'Track Name 1', artist: 'Artist 1', album: 'Album 1' },
-    { id: 2, name: 'Track Name 2', artist: 'Artist 2', album: 'Album 2' },
-    // Add more tracks as needed
-  ]);
+  // To handle search results
+  const [searchResults, setSearchResults] = useState([]);
+
+  const handleSearch = (query) => {
+    Spotify.search(query)
+      .then((results) => {
+        setSearchResults(results);
+      })
+      .catch((error) => {
+        console.error('Error searching:', error);
+      });
+  };
 
   // Mock data for playlist
   const [playlistName, setPlaylistName] = useState('My Playlist');
@@ -53,7 +59,7 @@ function App() {
 
   return (
     <div className="App">
-      <SearchBar />
+      <SearchBar onSearch={handleSearch} />
       <div className="App-playlist">
         <SearchResults searchResults={searchResults} onAdd={addTrackToPlaylist} />
         <Playlist 
