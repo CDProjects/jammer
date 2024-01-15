@@ -1,10 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import SearchBar from './SearchBar/SearchBar';
 import SearchResults from './SearchResults/SearchResults';
 import Playlist from './Playlist/Playlist';
+import Spotify from './Spotify';
 import './App.css';
 
 function App() {
+  useEffect(() => {
+    Spotify.getAccessToken(); // Ensure we have an access token
+  }, []);
   // Mock data for search results
   const [searchResults, setSearchResults] = useState([
     { id: 1, name: 'Track Name 1', artist: 'Artist 1', album: 'Album 1' },
