@@ -1,15 +1,23 @@
-import React, { useState, useEffect } from 'react';
-import SearchBar from './SearchBar/SearchBar';
-import SearchResults from './SearchResults/SearchResults';
-import Playlist from './Playlist/Playlist';
-import Spotify from './Spotify';
-import './App.css';
+import React, { useState, useEffect } from "react";
+import SearchBar from "./SearchBar/SearchBar";
+import SearchResults from "./SearchResults/SearchResults";
+import Playlist from "./Playlist/Playlist";
+import Spotify from "./Spotify";
+import "./App.css";
 
 function App() {
   useEffect(() => {
-    Spotify.getAccessToken(); // Ensure we have an access token
+    const fetchToken = async () => {
+      // Asynchronous operation
+      try {
+        await Spotify.getAccessToken();
+      } catch (error) {
+        // Handle error
+      }
+    };
+    fetchToken();
   }, []);
-  // To handle search results
+  // Handles search results
   const [searchResults, setSearchResults] = useState([]);
 
   const handleSearch = (query) => {
@@ -18,29 +26,43 @@ function App() {
         setSearchResults(results);
       })
       .catch((error) => {
-        console.error('Error searching:', error);
+        console.error("Error searching:", error);
       });
   };
 
   // Mock data for playlist
-  const [playlistName, setPlaylistName] = useState('My Playlist');
+  const [playlistName, setPlaylistName] = useState("My Playlist");
   const [playlistTracks, setPlaylistTracks] = useState([
-    { id: 3, name: 'Track Name 3', artist: 'Artist 3', album: 'Album 3' },
-    { id: 4, name: 'Track Name 4', artist: 'Artist 4', album: 'Album 4' },
-    { id: 1, name: 'Track 1', artist: 'Artist 1', album: 'Album 1', uri: 'spotify:track:5Er1BdhfwUWxWFO8pxAYwD' },
-    { id: 2, name: 'Track 2', artist: 'Artist 2', album: 'Album 2', uri: 'spotify:track:1tqArbKc1vM3R0BgeZ6055' },
+    { id: 3, name: "Track Name 3", artist: "Artist 3", album: "Album 3" },
+    { id: 4, name: "Track Name 4", artist: "Artist 4", album: "Album 4" },
+    {
+      id: 1,
+      name: "Track 1",
+      artist: "Artist 1",
+      album: "Album 1",
+      uri: "spotify:track:5Er1BdhfwUWxWFO8pxAYwD",
+    },
+    {
+      id: 2,
+      name: "Track 2",
+      artist: "Artist 2",
+      album: "Album 2",
+      uri: "spotify:track:1tqArbKc1vM3R0BgeZ6055",
+    },
     // Add more tracks as needed
   ]);
 
   const addTrackToPlaylist = (track) => {
-    if (playlistTracks.find(savedTrack => savedTrack.id === track.id)) {
+    if (playlistTracks.find((savedTrack) => savedTrack.id === track.id)) {
       return; // Track already in playlist, do nothing
     }
     setPlaylistTracks([...playlistTracks, track]);
   };
 
   const removeTrackFromPlaylist = (track) => {
-    setPlaylistTracks(playlistTracks.filter(savedTrack => savedTrack.id !== track.id));
+    setPlaylistTracks(
+      playlistTracks.filter((savedTrack) => savedTrack.id !== track.id)
+    );
   };
 
   const updatePlaylistName = (newName) => {
@@ -48,12 +70,12 @@ function App() {
   };
 
   const savePlaylist = () => {
-    const trackURIs = playlistTracks.map(track => track.uri);
-    console.log('Saving playlist to Spotify with URIs:', trackURIs);
+    const trackURIs = playlistTracks.map((track) => track.uri);
+    console.log("Saving playlist to Spotify with URIs:", trackURIs);
     // Here you will eventually interact with the Spotify API
 
     // Reset the playlist after saving
-    setPlaylistName('New Playlist');
+    setPlaylistName("New Playlist");
     setPlaylistTracks([]);
   };
 
@@ -61,9 +83,12 @@ function App() {
     <div className="App">
       <SearchBar onSearch={handleSearch} />
       <div className="App-playlist">
-        <SearchResults searchResults={searchResults} onAdd={addTrackToPlaylist} />
-        <Playlist 
-          playlistName={playlistName} 
+        <SearchResults
+          searchResults={searchResults}
+          onAdd={addTrackToPlaylist}
+        />
+        <Playlist
+          playlistName={playlistName}
           playlistTracks={playlistTracks}
           onNameChange={setPlaylistName}
           onRemove={removeTrackFromPlaylist}
