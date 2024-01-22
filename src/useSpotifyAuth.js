@@ -6,26 +6,29 @@ const scopes = ['playlist-modify-public', 'playlist-modify-private'];
 const authEndpoint = 'https://accounts.spotify.com/authorize';
 
 const useSpotifyAuth = () => {
-  const [accessToken, setAccessToken] = useState(null);
+  const [accessToken, setAccessToken] = useState(localStorage.getItem('spotifyAccessToken'));
 
   useEffect(() => {
-    // Parse the access token from the URL
-    const accessTokenMatch = window.location.href.match(/access_token=([^&]*)/);
-    const expiresInMatch = window.location.href.match(/expires_in=([^&]*)/);
+    if (!accessToken) {
+      const accessTokenMatch = window.location.hash.match(/#access_token=([^&]*)/);
+      const expiresInMatch = window.location.hash.match(/expires_in=([^&]*)/);
 
-    if (accessTokenMatch && expiresInMatch) {
-      const token = accessTokenMatch[1];
-      const expiresIn = Number(expiresInMatch[1]);
+      if (accessTokenMatch && expiresInMatch) {
+        const token = accessTokenMatch[1];
+        const expiresIn = Number(expiresInMatch[1]);
 
-      window.history.pushState('Access Token', null, '/'); // Clear URL parameters
-      setAccessToken(token);
+        localStorage.setItem('spotifyAccessToken', token);
+        setAccessToken(token);
 
-      // Set a timeout to clear the token after it expires
-      window.setTimeout(() => setAccessToken(null), expiresIn * 1000);
-    } else if (!accessToken) {
-      // Redirect to Spotify login if there's no access token
-      const url = `${authEndpoint}?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scopes.join(' ')}&response_type=token&show_dialog=true`;
-      window.location = url;
+        window.setTimeout(() => {
+          localStorage.removeItem('spotifyAccessToken');
+          setAccessToken(null);
+        }, expiresIn * 1000);
+
+        window.history.pushState('Access Token', null, '/');
+      } else if (!window.location.hash) {
+        window.location = `${authEndpoint}?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scopes.join(' ')}&response_type=token&show_dialog=true`;
+      }
     }
   }, [accessToken]);
 
