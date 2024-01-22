@@ -1,55 +1,33 @@
-import React, { useState, useEffect } from "react";
-import SearchBar from "./SearchBar/SearchBar";
-import SearchResults from "./SearchResults/SearchResults";
-import Playlist from "./Playlist/Playlist";
-import Spotify from "./Spotify";
-import "./App.css";
+import React, { useState } from 'react';
+import SearchBar from './SearchBar/SearchBar';
+import SearchResults from './SearchResults/SearchResults';
+import Playlist from './Playlist/Playlist';
+import Spotify from './Spotify';
+import useSpotifyAuth from './useSpotifyAuth';  // Importing the new hook
+import './App.css';
 
 function App() {
-  useEffect(() => {
-    const fetchToken = async () => {
-      // Asynchronous operation
-      try {
-        await Spotify.getAccessToken();
-      } catch (error) {
-        // Handle error
-      }
-    };
-    fetchToken();
-  }, []);
-  // Handles search results
+  const accessToken = useSpotifyAuth(); // Using the new hook for authentication
   const [searchResults, setSearchResults] = useState([]);
 
   const handleSearch = (query) => {
-    Spotify.search(query)
+    if (!accessToken) {
+      console.log('Access token is not available.');
+      return;
+    }
+    Spotify.search(query, accessToken)
       .then((results) => {
         setSearchResults(results);
       })
       .catch((error) => {
-        console.error("Error searching:", error);
+        console.error('Error searching:', error);
       });
   };
 
   // Mock data for playlist
-  const [playlistName, setPlaylistName] = useState("My Playlist");
+  const [playlistName, setPlaylistName] = useState('My Playlist');
   const [playlistTracks, setPlaylistTracks] = useState([
-    { id: 3, name: "Track Name 3", artist: "Artist 3", album: "Album 3" },
-    { id: 4, name: "Track Name 4", artist: "Artist 4", album: "Album 4" },
-    {
-      id: 1,
-      name: "Track 1",
-      artist: "Artist 1",
-      album: "Album 1",
-      uri: "spotify:track:5Er1BdhfwUWxWFO8pxAYwD",
-    },
-    {
-      id: 2,
-      name: "Track 2",
-      artist: "Artist 2",
-      album: "Album 2",
-      uri: "spotify:track:1tqArbKc1vM3R0BgeZ6055",
-    },
-    // Add more tracks as needed
+    // Existing mock tracks
   ]);
 
   const addTrackToPlaylist = (track) => {
@@ -71,11 +49,11 @@ function App() {
 
   const savePlaylist = () => {
     const trackURIs = playlistTracks.map((track) => track.uri);
-    console.log("Saving playlist to Spotify with URIs:", trackURIs);
+    console.log('Saving playlist to Spotify with URIs:', trackURIs);
     // Here you will eventually interact with the Spotify API
 
     // Reset the playlist after saving
-    setPlaylistName("New Playlist");
+    setPlaylistName('New Playlist');
     setPlaylistTracks([]);
   };
 
@@ -83,14 +61,11 @@ function App() {
     <div className="App">
       <SearchBar onSearch={handleSearch} />
       <div className="App-playlist">
-        <SearchResults
-          searchResults={searchResults}
-          onAdd={addTrackToPlaylist}
-        />
-        <Playlist
-          playlistName={playlistName}
+        <SearchResults searchResults={searchResults} onAdd={addTrackToPlaylist} />
+        <Playlist 
+          playlistName={playlistName} 
           playlistTracks={playlistTracks}
-          onNameChange={setPlaylistName}
+          onNameChange={updatePlaylistName}  // Updated to use the correct function
           onRemove={removeTrackFromPlaylist}
           onSave={savePlaylist}
         />
