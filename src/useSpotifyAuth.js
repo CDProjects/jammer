@@ -9,21 +9,30 @@ const useSpotifyAuth = () => {
   const [accessToken, setAccessToken] = useState(null);
 
   useEffect(() => {
-    // Parse the access token from the URL
+    console.log('useEffect triggered in useSpotifyAuth');
+
     const accessTokenMatch = window.location.href.match(/access_token=([^&]*)/);
     const expiresInMatch = window.location.href.match(/expires_in=([^&]*)/);
+
+    console.log('Access Token Match:', accessTokenMatch);
+    console.log('Expires In Match:', expiresInMatch);
 
     if (accessTokenMatch && expiresInMatch) {
       const token = accessTokenMatch[1];
       const expiresIn = Number(expiresInMatch[1]);
 
-      window.history.pushState('Access Token', null, '/'); // Clear URL parameters
       setAccessToken(token);
+      console.log('Token set:', token);
 
-      // Set a timeout to clear the token after it expires
-      window.setTimeout(() => setAccessToken(null), expiresIn * 1000);
+      window.setTimeout(() => {
+        console.log('Token expired, clearing access token');
+        setAccessToken(null)
+      }, expiresIn * 1000);
+
+      window.history.pushState('Access Token', null, '/');
+      console.log('URL parameters cleared');
     } else if (!accessToken) {
-      // Redirect to Spotify login if there's no access token
+      console.log('Redirecting to Spotify login');
       const url = `${authEndpoint}?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scopes.join(' ')}&response_type=token&show_dialog=true`;
       window.location = url;
     }
