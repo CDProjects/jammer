@@ -48,13 +48,21 @@ function App() {
   };
 
   const savePlaylist = () => {
-    const trackURIs = playlistTracks.map((track) => track.uri);
-    console.log('Saving playlist to Spotify with URIs:', trackURIs);
-    // Here you will eventually interact with the Spotify API
-
-    // Reset the playlist after saving
-    setPlaylistName('New Playlist');
-    setPlaylistTracks([]);
+    if (!accessToken || playlistTracks.length === 0 || !playlistName) {
+      console.log('Missing access token, playlist name, or tracks.');
+      return;
+    }
+  
+    const trackURIs = playlistTracks.map(track => track.uri);
+    Spotify.getUserID(accessToken)
+      .then(userID => Spotify.createPlaylist(userID, playlistName, accessToken))
+      .then(playlistID => Spotify.addTracksToPlaylist(playlistID, trackURIs, accessToken))
+      .then(() => {
+        setPlaylistName('New Playlist');
+        setPlaylistTracks([]);
+        console.log('Playlist saved to Spotify.');
+      })
+      .catch(error => console.error('Error saving playlist:', error));
   };
 
   return (
