@@ -6,12 +6,27 @@ const scopes = ['playlist-modify-public', 'playlist-modify-private'];
 const authEndpoint = 'https://accounts.spotify.com/authorize';
 
 const useSpotifyAuth = () => {
-  const [accessToken, setAccessToken] = useState(localStorage.getItem('spotifyAccessToken'));
+  const [accessToken, setAccessToken] = useState(() => {
+    const token = localStorage.getItem('spotifyAccessToken');
+    const expiry = localStorage.getItem('spotifyTokenExpiry');
+    const now = new Date();
+
+    if (token && expiry && now.getTime() < expiry) {
+      return token;
+    }
+
+    localStorage.removeItem('spotifyAccessToken');
+    localStorage.removeItem('spotifyTokenExpiry');
+    return null;
+  });
 
   useEffect(() => {
     if (!accessToken) {
       const accessTokenMatch = window.location.hash.match(/#access_token=([^&]*)/);
       const expiresInMatch = window.location.hash.match(/expires_in=([^&]*)/);
+      const expiresIn = Number(expiresInMatch[1]);
+      const expiryTime = new Date().getTime() + expiresIn * 1000;
+      localStorage.setItem('spotifyTokenExpiry', expiryTime);
 
       if (accessTokenMatch && expiresInMatch) {
         const token = accessTokenMatch[1];
