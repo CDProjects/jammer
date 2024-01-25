@@ -12,7 +12,6 @@ function App() {
 
   const handleSearch = (query) => {
     if (!accessToken) {
-      console.log('Access token is not available.');
       return;
     }
     Spotify.search(query, accessToken)
@@ -49,7 +48,6 @@ function App() {
 
   const savePlaylist = () => {
     if (!accessToken || playlistTracks.length === 0 || !playlistName) {
-      console.log('Missing access token, playlist name, or tracks.');
       return;
     }
   
@@ -60,7 +58,6 @@ function App() {
       .then(() => {
         setPlaylistName('New Playlist');
         setPlaylistTracks([]);
-        console.log('Playlist saved to Spotify.');
       })
       .catch(error => console.error('Error saving playlist:', error));
   };
