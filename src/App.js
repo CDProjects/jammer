@@ -1,37 +1,47 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import SearchBar from "./SearchBar/SearchBar";
 import SearchResults from "./SearchResults/SearchResults";
 import Playlist from "./Playlist/Playlist";
 import Spotify from "./Spotify";
-import useSpotifyAuth from "./useSpotifyAuth"; // Importing the new hook
+import useSpotifyAuth from "./useSpotifyAuth";
 import "./App.css";
 
 function App() {
-  const accessToken = useSpotifyAuth(); // Using the new hook for authentication
+  const accessToken = useSpotifyAuth();
   const [searchResults, setSearchResults] = useState([]);
+  const [playlistName, setPlaylistName] = useState("My Playlist");
+  const [playlistTracks, setPlaylistTracks] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    if (accessToken !== null) {
+      setIsLoading(false);
+    }
+  }, [accessToken]);
 
   const handleSearch = (query) => {
     if (!accessToken) {
+      setError("Please authenticate with Spotify to search.");
       return;
     }
+    setIsLoading(true);
+    setError(null);
     Spotify.search(query, accessToken)
       .then((results) => {
         setSearchResults(results);
+        setIsLoading(false);
       })
       .catch((error) => {
         console.error("Error searching:", error);
+        setError("An error occurred while searching. Please try again.");
+        setIsLoading(false);
       });
   };
 
-  // Mock data for playlist
-  const [playlistName, setPlaylistName] = useState("My Playlist");
-  const [playlistTracks, setPlaylistTracks] = useState([
-    // Existing mock tracks
-  ]);
-
   const addTrackToPlaylist = (track) => {
     if (playlistTracks.find((savedTrack) => savedTrack.id === track.id)) {
-      return; // Track already in playlist, do nothing
+      return;
     }
     setPlaylistTracks([...playlistTracks, track]);
   };
@@ -47,11 +57,17 @@ function App() {
   };
 
   const savePlaylist = () => {
-    if (!accessToken || playlistTracks.length === 0 || !playlistName) {
-      console.log("Missing access token, playlist name, or tracks.");
+    if (!accessToken) {
+      setError("Please authenticate with Spotify to save your playlist.");
+      return;
+    }
+    if (playlistTracks.length === 0 || !playlistName) {
+      setError("Please add tracks to your playlist and give it a name.");
       return;
     }
 
+    setIsLoading(true);
+    setError(null);
     const trackURIs = playlistTracks.map((track) => track.uri);
     Spotify.getUserID(accessToken)
       .then((userID) =>
@@ -63,13 +79,23 @@ function App() {
       .then(() => {
         setPlaylistName("New Playlist");
         setPlaylistTracks([]);
+        setIsLoading(false);
         console.log("Playlist saved to Spotify.");
       })
-      .catch((error) => console.error("Error saving playlist:", error));
+      .catch((error) => {
+        console.error("Error saving playlist:", error);
+        setError("An error occurred while saving the playlist. Please try again.");
+        setIsLoading(false);
+      });
   };
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="App">
+      {error && <div className="error-message">{error}</div>}
       <SearchBar onSearch={handleSearch} />
       <div className="App-playlist">
         <SearchResults
@@ -79,7 +105,7 @@ function App() {
         <Playlist
           playlistName={playlistName}
           playlistTracks={playlistTracks}
-          onNameChange={updatePlaylistName} // Updated to use the correct function
+          onNameChange={updatePlaylistName}
           onRemove={removeTrackFromPlaylist}
           onSave={savePlaylist}
         />
