@@ -4,36 +4,23 @@ import './Playlist.css';
 
 function Playlist({ playlistName, playlistTracks, onNameChange, onRemove, onSave }) {
   const [isEditing, setIsEditing] = useState(false);
-  const [newPlaylistName, setNewPlaylistName] = useState(playlistName);
-
-  const handleNameClick = () => {
-    setIsEditing(true);
-  };
 
   const handleNameChange = (e) => {
-    setNewPlaylistName(e.target.value);
-  };
-
-  const handleNameBlur = () => {
-    setIsEditing(false);
-    onNameChange(newPlaylistName); // Call the prop function to update the playlist name
+    onNameChange(e.target.value);
   };
 
   return (
     <div className="Playlist">
-      {isEditing ? (
-        <input 
-          className="Playlist-input" 
-          value={newPlaylistName} 
-          onChange={handleNameChange} 
-          onBlur={handleNameBlur} 
-          autoFocus
+      <div className="Playlist-name-container">
+        <input
+          value={playlistName}
+          onChange={handleNameChange}
+          onFocus={() => setIsEditing(true)}
+          onBlur={() => setIsEditing(false)}
+          placeholder={isEditing ? "Enter playlist name" : "Click to edit playlist name"}
         />
-      ) : (
-        <div className="Playlist-title" onClick={handleNameClick}>
-          {playlistName}
-        </div>
-      )}
+        <span className="edit-icon">✏️</span>
+      </div>
       <TrackList tracks={playlistTracks} onRemove={onRemove} isRemoval={true} />
       <button className="Playlist-save" onClick={onSave}>SAVE TO SPOTIFY</button>
     </div>

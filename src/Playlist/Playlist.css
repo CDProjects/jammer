@@ -10,15 +10,43 @@
   box-shadow: 0 4px 2px 2px #000000;
 }
 
+.Playlist-name-container {
+  position: relative;
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
 .Playlist input {
   width: 100%;
   border: 0;
   outline: 0;
-  background: transparent;
-  border-bottom: 1px solid #6f6f6f;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  padding: 0.5rem;
   font-family: 'Poppins', sans-serif;
   font-size: 1.55rem;
   color: #fff;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.Playlist input:hover,
+.Playlist input:focus {
+  background-color: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 0 0 2px #2e8b57;
+}
+
+.Playlist input::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.edit-icon {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.6);
+  pointer-events: none;
 }
 
 .Playlist-save {
