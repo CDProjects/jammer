@@ -3,6 +3,7 @@ import Header from "./Header"; // If you created a separate component
 import SearchBar from "./SearchBar/SearchBar";
 import SearchResults from "./SearchResults/SearchResults";
 import Playlist from "./Playlist/Playlist";
+import Spinner from "./Spinner"; 
 import Spotify from "./Spotify";
 import useSpotifyAuth from "./useSpotifyAuth";
 import "./App.css";
@@ -93,11 +94,11 @@ function App() {
   };
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <Spinner />;
   }
 
   if (!accessToken) {
-    return <div>Authenticating with Spotify...</div>;
+    return <Spinner />;  // You can use the spinner here too instead of text
   }
 
   return (
