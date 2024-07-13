@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import Header from "./Header"; // If you created a separate component
 import SearchBar from "./SearchBar/SearchBar";
 import SearchResults from "./SearchResults/SearchResults";
 import Playlist from "./Playlist/Playlist";
@@ -84,7 +85,9 @@ function App() {
       })
       .catch((error) => {
         console.error("Error saving playlist:", error);
-        setError("An error occurred while saving the playlist. Please try again.");
+        setError(
+          "An error occurred while saving the playlist. Please try again."
+        );
         setIsLoading(false);
       });
   };
@@ -99,6 +102,7 @@ function App() {
 
   return (
     <div className="App">
+      <Header />
       {error && <div className="error-message">{error}</div>}
       <SearchBar onSearch={handleSearch} />
       <div className="App-playlist">

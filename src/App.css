@@ -1,24 +1,19 @@
-body, html {
-  height: 100%;
-}
-
-body {
-  background-color: #191414;
-  color: #ffffff;
-  font-family: 'Helvetica Neue', sans-serif;
-}
-
 .App {
   text-align: center;
-  padding: 0 5%;
+  padding: 0 5%; /* Keep this padding */
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+  position: relative;
+}
+
+.App-content {
+  max-width: 1400px; /* Adjust this value as needed */
+  margin: 0 auto;
 }
 
 .App-playlist {
   display: flex;
   justify-content: space-between;
   width: 100%;
-  height: 950px;
   padding-top: 45px;
 }
 

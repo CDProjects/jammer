@@ -1,0 +1,24 @@
+.header-container {
+    background-color: #010c3f;
+    width: 100vw;
+    position: relative;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
+  }
+  
+  .header {
+    font-family: 'Poppins', sans-serif; /* or your custom font */
+    font-size: 2.5rem;
+    text-align: center;
+    padding: 10px 0;
+    color: #fff;
+    max-width: 1400px; /* Should match .App-content max-width */
+    margin: 0 auto;
+    box-sizing: border-box;
+  }
+  
+  .header .highlight {
+    color: #2e8b57; /* Sea green color for the 'm's */
+  }
