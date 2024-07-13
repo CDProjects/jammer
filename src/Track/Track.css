@@ -5,6 +5,20 @@
   padding: 10px 0;
 }
 
+.Track-image {
+  width: 64px;
+  height: 64px;
+  margin-right: 10px;
+  flex-shrink: 0;
+}
+
+.Track-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
 .Track-preview {
   cursor: pointer;
   padding: 0.5rem;

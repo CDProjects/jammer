@@ -32,11 +32,13 @@ function Track({ track, onAdd, onRemove, isRemoval }) {
 
   return (
     <div className="Track">
+      <div className="Track-image">
+        <img src={track.albumArt} alt={`${track.album} cover`} />
+      </div>
       <div className="Track-information">
         <h3>{track.name}</h3>
         <p>{track.artist} | {track.album}</p>
       </div>
-      {track.preview_url && <AudioPreview previewUrl={track.preview_url} />}
       {
         isRemoval 
         ? <button className="Track-action" onClick={removeTrack}>-</button>
