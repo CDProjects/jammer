@@ -93,6 +93,10 @@ function App() {
     return <div>Loading...</div>;
   }
 
+  if (!accessToken) {
+    return <div>Authenticating with Spotify...</div>;
+  }
+
   return (
     <div className="App">
       {error && <div className="error-message">{error}</div>}
