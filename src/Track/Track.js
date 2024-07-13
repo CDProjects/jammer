@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import './Track.css';
+import React, { useState } from "react";
+import "./Track.css";
 
 function AudioPreview({ previewUrl }) {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -16,7 +16,7 @@ function AudioPreview({ previewUrl }) {
 
   return (
     <button className="Track-preview" onClick={togglePlay}>
-      {isPlaying ? '⏹️' : '▶️'}
+      {isPlaying ? "⏹️" : "▶️"}
     </button>
   );
 }
@@ -37,13 +37,20 @@ function Track({ track, onAdd, onRemove, isRemoval }) {
       </div>
       <div className="Track-information">
         <h3>{track.name}</h3>
-        <p>{track.artist} | {track.album}</p>
+        <p>
+          {track.artist} | {track.album}
+        </p>
       </div>
-      {
-        isRemoval 
-        ? <button className="Track-action" onClick={removeTrack}>-</button>
-        : <button className="Track-action" onClick={addTrack}>+</button>
-      }
+      {track.preview_url && <AudioPreview previewUrl={track.preview_url} />}
+      {isRemoval ? (
+        <button className="Track-action" onClick={removeTrack}>
+          -
+        </button>
+      ) : (
+        <button className="Track-action" onClick={addTrack}>
+          +
+        </button>
+      )}
     </div>
   );
 }
