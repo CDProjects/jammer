@@ -1,26 +1,38 @@
-import React, { useState, useEffect } from "react";
-import Header from "./Header"; // If you created a separate component
+import React, { useState, useEffect, useCallback } from "react";
+import Header from "./Header";
 import SearchBar from "./SearchBar/SearchBar";
 import SearchResults from "./SearchResults/SearchResults";
 import Playlist from "./Playlist/Playlist";
-import Spinner from "./Spinner"; 
+import Spinner from "./Spinner";
 import Spotify from "./Spotify";
 import useSpotifyAuth from "./useSpotifyAuth";
 import "./App.css";
 
 function App() {
   const accessToken = useSpotifyAuth();
+  const [allSearchResults, setAllSearchResults] = useState([]);
   const [searchResults, setSearchResults] = useState([]);
   const [playlistName, setPlaylistName] = useState("My Playlist");
   const [playlistTracks, setPlaylistTracks] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [showConfirmation, setShowConfirmation] = useState(false);
+
+  const updateFilteredSearchResults = useCallback(() => {
+    setSearchResults(allSearchResults.filter(
+      (track) => !playlistTracks.some((playlistTrack) => playlistTrack.id === track.id)
+    ));
+  }, [allSearchResults, playlistTracks]);
 
   useEffect(() => {
     if (accessToken !== null) {
       setIsLoading(false);
     }
   }, [accessToken]);
+
+  useEffect(() => {
+    updateFilteredSearchResults();
+  }, [updateFilteredSearchResults]);
 
   const handleSearch = (query) => {
     if (!accessToken) {
@@ -31,7 +43,7 @@ function App() {
     setError(null);
     Spotify.search(query, accessToken)
       .then((results) => {
-        setSearchResults(results);
+        setAllSearchResults(results);
         setIsLoading(false);
       })
       .catch((error) => {
@@ -45,12 +57,12 @@ function App() {
     if (playlistTracks.find((savedTrack) => savedTrack.id === track.id)) {
       return;
     }
-    setPlaylistTracks([...playlistTracks, track]);
+    setPlaylistTracks((prevTracks) => [...prevTracks, track]);
   };
 
   const removeTrackFromPlaylist = (track) => {
-    setPlaylistTracks(
-      playlistTracks.filter((savedTrack) => savedTrack.id !== track.id)
+    setPlaylistTracks((prevTracks) =>
+      prevTracks.filter((savedTrack) => savedTrack.id !== track.id)
     );
   };
 
@@ -58,18 +70,23 @@ function App() {
     setPlaylistName(newName);
   };
 
+  const confirmSavePlaylist = () => {
+    if (playlistTracks.length === 0 || !playlistName) {
+      setError("Please add tracks to your playlist and give it a name.");
+      return;
+    }
+    setShowConfirmation(true);
+  };
+
   const savePlaylist = () => {
     if (!accessToken) {
       setError("Please authenticate with Spotify to save your playlist.");
       return;
     }
-    if (playlistTracks.length === 0 || !playlistName) {
-      setError("Please add tracks to your playlist and give it a name.");
-      return;
-    }
 
     setIsLoading(true);
     setError(null);
+    setShowConfirmation(false);
     const trackURIs = playlistTracks.map((track) => track.uri);
     Spotify.getUserID(accessToken)
       .then((userID) =>
@@ -93,12 +110,16 @@ function App() {
       });
   };
 
+  const cancelSavePlaylist = () => {
+    setShowConfirmation(false);
+  };
+
   if (isLoading) {
     return <Spinner />;
   }
 
   if (!accessToken) {
-    return <Spinner />;  // You can use the spinner here too instead of text
+    return <Spinner />;
   }
 
   return (
@@ -116,9 +137,16 @@ function App() {
           playlistTracks={playlistTracks}
           onNameChange={updatePlaylistName}
           onRemove={removeTrackFromPlaylist}
-          onSave={savePlaylist}
+          onSave={confirmSavePlaylist}
         />
       </div>
+      {showConfirmation && (
+        <div className="confirmation-dialog">
+          <p>Are you sure you want to save this playlist to Spotify?</p>
+          <button onClick={savePlaylist}>Yes</button>
+          <button onClick={cancelSavePlaylist}>No</button>
+        </div>
+      )}
     </div>
   );
 }

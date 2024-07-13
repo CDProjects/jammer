@@ -5,6 +5,17 @@
   padding: 10px 0;
 }
 
+.Track-preview {
+  cursor: pointer;
+  padding: 0.5rem;
+  font-size: 1.05rem;
+  transition: color .25s;
+  border: 0px;
+  background-color: rgba(0, 0, 0, 0);
+  color: #fff;
+  min-width: 40px;
+}
+
 .Track-information {
   flex-grow: 1;
   display: flex;
