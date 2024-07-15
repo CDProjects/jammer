@@ -1,16 +1,16 @@
 {
   "files": {
     "main.css": "/jammer/static/css/main.cf51680a.css",
-    "main.js": "/jammer/static/js/main.b6e43bc6.js",
+    "main.js": "/jammer/static/js/main.c00c0ad2.js",
     "static/js/787.f15c9e56.chunk.js": "/jammer/static/js/787.f15c9e56.chunk.js",
     "static/media/Headphones image.jpg": "/jammer/static/media/Headphones image.8b34f8af9bc6b62a4882.jpg",
     "index.html": "/jammer/index.html",
     "main.cf51680a.css.map": "/jammer/static/css/main.cf51680a.css.map",
-    "main.b6e43bc6.js.map": "/jammer/static/js/main.b6e43bc6.js.map",
+    "main.c00c0ad2.js.map": "/jammer/static/js/main.c00c0ad2.js.map",
     "787.f15c9e56.chunk.js.map": "/jammer/static/js/787.f15c9e56.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.cf51680a.css",
-    "static/js/main.b6e43bc6.js"
+    "static/js/main.c00c0ad2.js"
   ]
 }
