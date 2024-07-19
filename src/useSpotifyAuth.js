@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 
 const clientId = process.env.REACT_APP_SPOTIFY_CLIENT_ID;
-const redirectUri = 'https://cdprojects.github.io/jammer/';
+const redirectUri = 'https://cdpjammer.netlify.app';
 const scopes = ['playlist-modify-public', 'playlist-modify-private'];
 const authEndpoint = 'https://accounts.spotify.com/authorize';
 
